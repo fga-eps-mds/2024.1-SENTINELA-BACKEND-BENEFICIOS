@@ -1,6 +1,0 @@
-NODE_ENV=development
-MONGO_URI=mongodb://root:password@benfitsdb:27017/
-MONGO_INITDB_ROOT_USERNAME=root
-MONGO_INITDB_ROOT_PASSWORD=password
-DB_HOST=benefitsdb
-PORT=3003

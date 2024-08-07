@@ -25,7 +25,7 @@ const corsOption = {
 app.use(cors(corsOption));
 
 // Middleware para parsear JSON
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: "50mb" }));
 
 // Conect to MongoB
 let url;

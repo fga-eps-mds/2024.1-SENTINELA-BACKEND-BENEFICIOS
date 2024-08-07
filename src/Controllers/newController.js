@@ -1,8 +1,8 @@
-const NewSchema = require("../Models/userSchema");
+const Beneficios = require("../Models/benefitsCreateSchema");
 
 const createNew = async (req, res) => {
     try {
-        const newSchema = new NewSchema(req.body);
+        const newSchema = new Beneficios(req.body);
         await newSchema.save(); // pausa até o banco salvar
         return res.status(201).send(newSchema);
     } catch (error) {
@@ -12,7 +12,7 @@ const createNew = async (req, res) => {
 
 const getNews = async (req, res) => {
     try {
-        const newSchema = await NewSchema.find();
+        const newSchema = await Beneficios.find();
         res.status(200).send(newSchema);
     } catch (error) {
         res.status(500).send(error);

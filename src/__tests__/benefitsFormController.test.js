@@ -6,6 +6,14 @@ const routes = require("../routes");
 const BenefitsModel = require("../Models/benefitsFormSchema");
 const { MongoMemoryServer } = require("mongodb-memory-server");
 
+const mockedBenefit = {
+    nome: "Health Benefits",
+    razaoSocial: "Empresa Saúde S/A",
+    statusConvenio: "Ativo",
+    considerarIr: "Sim",
+    descontoAut: "Não",
+};
+
 const app = express();
 let mongoServer;
 
@@ -22,29 +30,25 @@ app.use(express.urlencoded({ extended: true }));
 // Rotas
 app.use("/", routes);
 
-beforeAll(async () => {
-    mongoServer = await MongoMemoryServer.create();
-    const uri = mongoServer.getUri();
-
-    await mongoose.connect(uri, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    });
-});
-
-afterAll(async () => {
-    await mongoose.connection.close();
-    await mongoServer.stop();
-});
-
 describe("BenefitsForm Controller Tests", () => {
-    const mockedBenefit = {
-        nome: "Health Benefits",
-        razaoSocial: "Empresa Saúde S/A",
-        statusConvenio: "Ativo",
-        considerarIr: "Sim",
-        descontoAut: "Não",
-    };
+    beforeAll(async () => {
+        mongoServer = await MongoMemoryServer.create();
+        const uri = mongoServer.getUri();
+
+        await mongoose.connect(uri, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
+    });
+
+    afterAll(async () => {
+        await mongoose.connection.close();
+        await mongoServer.stop();
+    });
+
+    afterEach(async () => {
+        await BenefitsModel.deleteMany({});
+    });
 
     it("should create a new benefit", async () => {
         const res = await request(app)
@@ -64,16 +68,16 @@ describe("BenefitsForm Controller Tests", () => {
 
         const res = await request(app).get(`/benefits/${createdBenefit._id}`);
 
-        expect(res.status).toBe(200);
         expect(res.body).toMatchObject(createdBenefit);
+        expect(res.status).toBe(200);
     });
 
     it("should get benefits", async () => {
         const benefitsModelCount = await BenefitsModel.countDocuments({});
         const res = await request(app).get("/benefits");
 
-        expect(res.status).toBe(200);
         expect(res.body.length).toBe(benefitsModelCount);
+        expect(res.status).toBe(200);
     });
 
     it("should delete benefit", async () => {
@@ -88,8 +92,8 @@ describe("BenefitsForm Controller Tests", () => {
             `/benefits/delete/${createdBenefit._id}`
         );
 
-        expect(res.status).toBe(200);
         expect(res.body).toMatchObject(createdBenefit);
+        expect(res.status).toBe(200);
     });
 
     it("should update benefit", async () => {

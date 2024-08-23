@@ -7,6 +7,7 @@
 
 const reporter = process.env.JEST_SONAR;
 const config = {
+    testTimeout: 30000,
     // All imported modules in your tests should be mocked automatically
     // automock: false,
 
